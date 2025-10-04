@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  title: OpenWeather Proxy API
+  description: API for fetching weather, air quality, and geocoding data from OpenWeatherMap.
+  version: 1.0.0
+  contact:
+    name: OpenWeatherMap Support
+    url: https://openweathermap.org
+servers:
+  - url: https://api.openweathermap.org
+    description: OpenWeatherMap Base URL
+paths:
+  /data/2.5/weather:
+    get:
+      summary: Get current weather data for a city
+      description: Fetch current weather details such as temperature, humidity, and weather description.
+      parameters:
+        - $ref: '#/components/parameters/q'
+        - $ref: '#/components/parameters/appid'
+      responses:
+        200:
+          $ref: '#/components/responses/WeatherResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedResponse'
+        404:
+          $ref: '#/components/responses/NotFoundResponse'
+  /data/2.5/forecast:
+    get:
+      summary: Get 5-day/3-hour weather forecast
+      description: Retrieve weather forecasts at 3-hour intervals for the next 5 days.
+      parameters:
+        - $ref: '#/components/parameters/q'
+        - $ref: '#/components/parameters/appid'
+      responses:
+        200:
+          $ref: '#/components/responses/ForecastResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedResponse'
+        404:
+          $ref: '#/components/responses/NotFoundResponse'
+  /data/2.5/air_pollution:
+    get:
+      summary: Get air quality data
+      description: Fetch air quality data for specific coordinates.
+      parameters:
+        - $ref: '#/components/parameters/lat'
+        - $ref: '#/components/parameters/lon'
+        - $ref: '#/components/parameters/appid'
+      responses:
+        200:
+          $ref: '#/components/responses/AirPollutionResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedResponse'
+        404:
+          $ref: '#/components/responses/NotFoundResponse'
+  /geo/1.0/direct:
+    get:
+      summary: Geocode a location
+      description: Fetch geographic coordinates for a given city, state, and country.
+      parameters:
+        - $ref: '#/components/parameters/q'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/appid'
+      responses:
+        200:
+          $ref: '#/components/responses/GeocodeResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedResponse'
+        404:
+          $ref: '#/components/responses/NotFoundResponse'
+components:
+  parameters:
+    q:
+      name: q
+      in: query
+      description: Name of the city (or city, state, and country).
+      required: true
+      schema:
+        type: string
+    appid:
+      name: appid
+      in: query
+      description: API key for authentication.
+      required: true
+      schema:
+        type: string
+    lat:
+      name: lat
+      in: query
+      description: Latitude of the location (e.g., "51.5074").
+      required: true
+      schema:
+        type: number
+    lon:
+      name: lon
+      in: query
+      description: Longitude of the location (e.g., "-0.1278").
+      required: true
+      schema:
+        type: number
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of results to return.
+      required: false
+      schema:
+        type: integer
+        default: 5
+  responses:
+    WeatherResponse:
+      description: Successful response for current weather data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              weather:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    description:
+                      type: string
+                    main:
+                      type: string
+              main:
+                type: object
+                properties:
+                  temp:
+                    type: number
+                  feels_like:
+                    type: number
+                  humidity:
+                    type: number
+    ForecastResponse:
+      description: Successful response for weather forecast data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              list:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dt_txt:
+                      type: string
+                    main:
+                      type: object
+                      properties:
+                        temp:
+                          type: number
+                        feels_like:
+                          type: number
+                        humidity:
+                          type: number
+                    weather:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          description:
+                            type: string
+                          main:
+                            type: string
+    AirPollutionResponse:
+      description: Successful response for air quality data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              list:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    main:
+                      type: object
+                      properties:
+                        aqi:
+                          type: integer
+                    components:
+                      type: object
+                      properties:
+                        pm2_5:
+                          type: number
+                        pm10:
+                          type: number
+                        co:
+                          type: number
+    GeocodeResponse:
+      description: Successful response for geocoding data
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                local_names:
+                  type: object
+                  additionalProperties:
+                    type: string
+                lat:
+                  type: number
+                lon:
+                  type: number
+                country:
+                  type: string
+                state:
+                  type: string
+    UnauthorizedResponse:
+      description: Unauthorized - Invalid API key
+    NotFoundResponse:
+      description: Resource not found

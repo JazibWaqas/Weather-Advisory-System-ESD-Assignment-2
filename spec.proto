@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package WeatherAdvisory;
+
+option go_package = "github.com/hu-modern-software-practices/project-2/go/pb";
+
+service WeatherAdvisory {
+    rpc GetAirQuality(AirQualityRequest) returns (AirQualityResponse);
+    rpc GetWeather(WeatherRequest) returns (WeatherResponse);
+    rpc GetTravelRecommendation(TravelRequest) returns (TravelRecommendationResponse);
+}
+
+message AirQualityRequest {
+    string city = 1;
+}
+
+message AirQualityResponse {
+    string city = 1;
+    string air_quality = 2;
+    string message = 3; // e.g., "Good air quality"
+}
+
+message WeatherRequest {
+    string city = 1;
+}
+
+message WeatherResponse {
+    string city = 1;
+    float temperature = 2;
+    string description = 3; // e.g., "Sunny"
+}
+
+message TravelRequest {
+    string city = 1;
+}
+
+message TravelRecommendationResponse {
+    string city = 1;
+    string recommendation = 2; // e.g., "Safe to travel"
+}
