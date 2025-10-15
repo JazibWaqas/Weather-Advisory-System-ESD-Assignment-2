@@ -208,13 +208,19 @@ Since the you pick the programming language of server, you have to document how 
 
 **How to run the Python server:**
 
-1. Start the server:
+1. Set up environment variables:
+   ```bash
+   export OPENWEATHER_API_KEY=8e7b073df463f91111e4bd3d6901dc0b
+   export SERVER_PORT=9999
+   ```
+
+2. Start the server:
    ```bash
    cd python
    python server.py
    ```
 
-2. Test quickly (in new terminal):
+3. Test quickly (in new terminal):
    ```bash
    cd python
    python testing.py

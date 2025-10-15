@@ -4,7 +4,7 @@ import spec_pb2_grpc
 
 
 def test_weather_service():
-    channel = grpc.insecure_channel('localhost:8888')
+    channel = grpc.insecure_channel('localhost:9999')
     stub = spec_pb2_grpc.WeatherAdvisoryStub(channel)
     
     print("Testing air quality...")
